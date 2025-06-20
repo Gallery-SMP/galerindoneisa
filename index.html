@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="icon" type="image/png" href="Desain_tanpa_judul__1_-removebg-preview.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GALLERINDONESIA</title>
+  <link rel="icon" href="favicon.jpg" type="image/x-icon" />
+  <style>
+    :root {
+      --bg: #121212;
+      --card-bg: rgba(0,0,0,0.75);
+      --text: #f0f0f0;
+      --accent: #888;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text);
+      background-color: var(--bg);
+    }
+
+    #loginContainer {
+      background: url('https://i.pinimg.com/736x/d3/55/aa/d355aa283edadd9164c36fa2258961a3.jpg') center/cover no-repeat;
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .overlay {
+      backdrop-filter: blur(8px);
+      background: var(--card-bg);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      z-index: 3;
+    }
+
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrapper input {
+      padding: 12px 44px 12px 12px;
+      font-size: 16px;
+      width: 100%;
+      border: 1px solid #444;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background: #000;
+      color: #fff;
+      box-sizing: border-box;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 43%;
+      right: 12px;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      height: 24px;
+      width: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .toggle-password svg {
+      fill: var(--accent);
+      width: 22px;
+      height: 22px;
+    }
+
+    button {
+      padding: 10px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .error {
+      color: #ff7777;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .galleryContainer {
+      display: none;
+      background: url('https://i.pinimg.com/736x/52/c9/b1/52c9b1bfd8ec32810014710d2fcb8d1d.jpg') center/cover no-repeat;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+
+    .gallery {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 1300px;
+      margin: auto;
+    }
+
+    .gallery h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .gallery-grid img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+      transition: transform 0.4s ease, filter 0.4s ease;
+      filter: grayscale(100%);
+      cursor: pointer;
+    }
+
+    .gallery-grid img:hover {
+      transform: scale(1.05);
+      filter: grayscale(0%);
+    }
+
+    #fullscreen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #fullscreen img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      transform-origin: center;
+      transition: transform 0.2s ease;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    #fullscreen::before {
+      content: "✖";
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 32px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .backButton {
+      margin-top: 40px;
+      margin-left: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .backButton:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    @media(max-width: 480px) {
+      .gallery-grid img {
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginContainer">
+  <div class="overlay">
+    <div class="login-box">
+      <h2>Masukkan Password</h2>
+      <div class="password-wrapper">
+        <input type="password" id="passwordInput" placeholder="Password">
+        <button class="toggle-password" onclick="togglePassword()" aria-label="Tampilkan Password">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 8.11 1 12c1.73 3.89 6 7.5 11 7.5s9.27-3.61 11-7.5c-1.73-3.89-6-7.5-11-7.5zm0 13c-3.03 0-5.5-2.47-5.5-5.5S8.97 6.5 12 6.5s5.5 2.47 5.5 5.5S15.03 17.5 12 17.5zm0-9A3.5 3.5 0 0 0 8.5 12 3.5 3.5 0 0 0 12 15.5 3.5 3.5 0 0 0 15.5 12 3.5 3.5 0 0 0 12 8.5z"/></svg>
+        </button>
+      </div>
+      <div class="error" id="errorMessage"></div>
+      <button onclick="checkPassword()">Lihat Galeri</button>
+    </div>
+  </div>
+</div>
+
+<!-- GALERI 1 -->
+<div id="gallery1" class="galleryContainer">
+  <div class="gallery">
+    <h1>GALERI 2</h1>
+    <div class="gallery-grid">
+      <img src="gambar 1.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 2.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 3.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 4.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 5.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 6.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 7.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 8.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 9.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 10.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 11.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 12.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 13.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 14.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 15.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 16.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 17.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 18.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 19.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 20.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 21.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 22.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 23.jpg" onclick="openFullscreen(this.src)">
+  <img src="gambar 24.jpg" onclick="openFullscreen(this.src)">
+    </div>
+    <button class="backButton" onclick="goBack()">⬅ Kembali</button>
+  </div>
+</div>
+
+<!-- GALERI 2 -->
+<div id="gallery2" class="galleryContainer">
+  <div class="gallery">
+    <h1>GALERI 1</h1>
+    <div class="gallery-grid">
+      <img src="foto 1.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 2.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 3.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 4.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 5.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 6.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 7.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 8.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 9.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 10.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 11.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 12.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 13.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 14.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 15.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 16.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 17.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 18.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 19.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 20.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 21.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 22.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 23.jpg" onclick="openFullscreen(this.src)">
+  <img src="foto 24.jpg" onclick="openFullscreen(this.src)">
+    </div>
+    <button class="backButton" onclick="goBack()">⬅ Kembali</button>
+  </div>
+</div>
+
+<!-- FULLSCREEN -->
+<div id="fullscreen" onclick="closeFullscreen()">
+  <img id="fullscreenImage" src="">
+</div>
+
+<script>
+  function checkPassword() {
+    const pw = document.getElementById("passwordInput").value;
+    const err = document.getElementById("errorMessage");
+
+    if (pw === "userbilingual321") {
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("gallery1").style.display = "block";
+    } else if (pw === "userbilingual123") {
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("gallery2").style.display = "block";
+    } else {
+      err.textContent = "Password salah, coba lagi.";
+    }
+  }
+
+  function goBack() {
+    document.getElementById("gallery1").style.display = "none";
+    document.getElementById("gallery2").style.display = "none";
+    document.getElementById("loginContainer").style.display = "block";
+    document.getElementById("passwordInput").value = "";
+    document.getElementById("errorMessage").textContent = "";
+  }
+
+  function togglePassword() {
+    const input = document.getElementById("passwordInput");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  function openFullscreen(src) {
+    const viewer = document.getElementById("fullscreen");
+    const image = document.getElementById("fullscreenImage");
+    image.src = src;
+    image.style.transform = 'scale(1)';
+    scale = 1;
+    viewer.style.display = "flex";
+  }
+
+  function closeFullscreen() {
+    document.getElementById("fullscreen").style.display = "none";
+  }
+
+  document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkPassword();
+  });
+
+  let scale = 1;
+  const zoomImg = document.getElementById("fullscreenImage");
+
+  zoomImg.addEventListener("wheel", function(e) {
+    e.preventDefault();
+    scale += e.deltaY * -0.001;
+    scale = Math.min(Math.max(1, scale), 4);
+    zoomImg.style.transform = `scale(${scale})`;
+  });
+
+  let initialPinchDistance = null;
+  let lastScale = 1;
+
+  document.getElementById("fullscreen").addEventListener("touchstart", function(e) {
+    if (e.touches.length === 2) {
+      initialPinchDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      lastScale = scale;
+    }
+  });
+
+  document.getElementById("fullscreen").addEventListener("touchmove", function(e) {
+    if (e.touches.length === 2 && initialPinchDistance) {
+      let currentDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      scale = Math.min(Math.max(1, lastScale * (currentDistance / initialPinchDistance)), 4);
+      zoomImg.style.transform = `scale(${scale})`;
+      e.preventDefault();
+    }
+  });
+
+  document.getElementById("fullscreen").addEventListener("touchend", function() {
+    initialPinchDistance = null;
+  });
+</script>
+
+</body>
+</html>
